@@ -53,9 +53,9 @@ export async function POST(req: Request) {
     const user = {
       clerkId: id,
       email: email_addresses[0].email_address,
-      username: username ?? " ", // Ensures username is not null or undefined
-      firstName: first_name ?? "",
-      lastName: last_name ?? "",
+      username: username ?? " ",
+      firstName: first_name!,
+      lastName: last_name!,
       photo: image_url,
     };
 
