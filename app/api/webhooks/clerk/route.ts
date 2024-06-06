@@ -4,7 +4,6 @@ import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 import { Webhook } from "svix";
 import { createUser } from "@/lib/actions/users.action";
-
 export async function POST(req: Request) {
   const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET;
   if (!WEBHOOK_SECRET) {
@@ -34,18 +33,19 @@ export async function POST(req: Request) {
       "svix-signature": svix_signature,
     }) as WebhookEvent;
   } catch (err) {
-    console.error("Error verifying webhook:", err);
+    console.error("Error verifying webhook:", err && headerPayload);
     return new Response("Error occured", {
       status: 400,
     });
   }
-  const { id } = evt.data;
+  //   const { id } = evt.data;
   const eventType = evt.type;
 
   // CREATE
   if (eventType === "user.created") {
     const { id, email_addresses, image_url, first_name, last_name, username } =
       evt.data;
+    console.log(evt.data);
 
     const user = {
       clerkId: id,
