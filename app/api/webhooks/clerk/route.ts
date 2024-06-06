@@ -50,23 +50,21 @@ export async function POST(req: Request) {
     const { id, email_addresses, image_url, first_name, last_name, username } =
       evt.data;
 
-    const user = {
+    const user: CreateUserParams = {
       clerkId: id,
       email: email_addresses[0].email_address,
-      username: username ?? "null",
-      firstName: first_name!,
-      lastName: last_name!,
+      username: JSON.stringify(username),
+      firstName: JSON.stringify(first_name),
+      lastName: JSON.stringify(last_name),
       photo: image_url,
     };
 
     try {
       const newUser = await createUser(user);
-
-      // Set public metadata
       if (newUser) {
         await clerkClient.users.updateUserMetadata(id, {
           publicMetadata: {
-            userId: newUser.id, // Adjusted to match your user ID field
+            userId: newUser.id,
           },
         });
       }
@@ -80,6 +78,5 @@ export async function POST(req: Request) {
     }
   }
 
-  // Ensure a response is returned for all paths
   return NextResponse.json({ message: "Unhandled event type" });
 }

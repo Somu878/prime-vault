@@ -29,15 +29,15 @@ model Profile {
 
 model User {
   id        Int      @id @default(autoincrement())
-  clerkId String
+  clerkId   String
   email     String   @unique
-  username  String @unique
-  firstName String
-  lastName  String
-  photo     String
-  phone Int?
-  posts   Post[]
-  profile Profile?
+  username  String   @unique @db.VarChar(255)
+  firstName String   @db.VarChar(255)
+  lastName  String   @db.VarChar(255)
+  photo     String    
+  phone     Int?
+  posts     Post[]
+  profile   Profile?
 }
 
 
