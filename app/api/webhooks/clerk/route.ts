@@ -4,7 +4,8 @@ import { WebhookEvent } from "@clerk/nextjs/server";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 import { Webhook } from "svix";
-import { createUser } from "@/lib/actions/users.action";
+import { createUser, deleteUser, updateUser } from "@/lib/actions/users.action";
+import { handleError } from "@/lib/utils";
 
 export async function POST(req: Request) {
   const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET;
@@ -42,7 +43,7 @@ export async function POST(req: Request) {
       status: 400,
     });
   }
-
+  const { id } = evt.data;
   const eventType = evt.type;
 
   // CREATE
@@ -77,6 +78,38 @@ export async function POST(req: Request) {
       });
     }
   }
+  // UPDATE
+  if (eventType === "user.updated") {
+    try {
+      const { email_addresses, image_url, first_name, last_name, username } =
+        evt.data;
 
-  return NextResponse.json({ message: "Unhandled event type" });
+      const user = {
+        email: email_addresses[0].email_address,
+        firstName: first_name!,
+        lastName: last_name!,
+        username: username!,
+        photo: image_url!,
+      };
+
+      const updatedUser = await updateUser(user);
+
+      return NextResponse.json({ message: "OK", user: updatedUser });
+    } catch (error) {
+      handleError(error);
+    }
+  }
+
+  // DELETE
+  if (eventType === "user.deleted") {
+    try {
+      const deletedUser = await deleteUser(id!);
+
+      return NextResponse.json({ message: "OK", user: deletedUser });
+    } catch (error) {
+      handleError(error);
+    }
+  }
+
+  return new Response("", { status: 200 });
 }
