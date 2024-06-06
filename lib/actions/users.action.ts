@@ -18,10 +18,10 @@ export async function updateUser(user: UpdateUserParams) {
         email: user.email,
       },
       data: {
-        username: user.username,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        photo: user.photo,
+        username: user.username!,
+        firstName: user.firstName!,
+        lastName: user.lastName!,
+        photo: user.photo!,
       },
     });
     return JSON.parse(JSON.stringify(updatedUser));
