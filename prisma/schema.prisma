@@ -32,8 +32,8 @@ model User {
   clerkId String
   email     String   @unique
   username  String @unique
-  firstName String?
-  lastName  String?
+  firstName String
+  lastName  String
   photo     String
   phone Int?
   posts   Post[]
